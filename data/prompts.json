@@ -1,0 +1,42 @@
+[
+  {
+    "task": "summarization",
+    "prompt": "Summarize in one sentence: The city council approved a new budget that increases funding for public transportation by 15% while cutting administrative overhead costs.",
+    "reference": "The city council passed a budget raising transit funding by 15% and cutting overhead."
+  },
+  {
+    "task": "summarization",
+    "prompt": "Summarize in one sentence: Researchers discovered that regular exercise improves memory retention in older adults by promoting new neural connections in the hippocampus.",
+    "reference": "Exercise boosts memory in older adults by encouraging new neural growth in the hippocampus."
+  },
+  {
+    "task": "question_answering",
+    "prompt": "Question: What is the capital of France? Answer:",
+    "reference": "Paris"
+  },
+  {
+    "task": "question_answering",
+    "prompt": "Question: What gas do plants absorb from the atmosphere during photosynthesis? Answer:",
+    "reference": "Carbon dioxide"
+  },
+  {
+    "task": "classification",
+    "prompt": "Classify the sentiment (positive, negative, neutral) of this review: 'The battery life is disappointing and it overheats constantly.' Sentiment:",
+    "reference": "negative"
+  },
+  {
+    "task": "classification",
+    "prompt": "Classify the sentiment (positive, negative, neutral) of this review: 'Absolutely love this laptop, fast and reliable every day.' Sentiment:",
+    "reference": "positive"
+  },
+  {
+    "task": "instruction_following",
+    "prompt": "List three benefits of using version control in software development.",
+    "reference": "Version control enables collaboration, change history tracking, and easy rollback of mistakes."
+  },
+  {
+    "task": "instruction_following",
+    "prompt": "Explain in simple terms what an API is.",
+    "reference": "An API is a set of rules that lets different software programs communicate with each other."
+  }
+]

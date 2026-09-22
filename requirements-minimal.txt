@@ -1,0 +1,11 @@
+# Minimal, fast install for CI and for trying the framework with the mock
+# backend only (no model downloads, no torch). Everything here is free /
+# open-source and installs in seconds.
+
+numpy>=1.24
+pandas>=2.0
+PyYAML>=6.0
+Jinja2>=3.1
+matplotlib>=3.7
+scikit-learn>=1.3
+pytest>=7.4

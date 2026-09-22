@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Generated outputs (DB, reports) — regenerate by running the pipeline
+outputs/*.db
+outputs/*.html
+outputs/*.csv
+
+# Model caches
+.cache/
+*.pt
+*.bin
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
