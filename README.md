@@ -47,3 +47,13 @@ EvaluateX/
 └── outputs/                    # generated DB, CSV, HTML report (gitignored)
 ```
 
+## TechStack
+
+- Python
+- Streamlit
+- Hugging Face
+- Pandas
+- ROUGE-L
+- BERTScore / Semantic Similarity
+- MLflow
+- SQLite

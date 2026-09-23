@@ -1,29 +1,3 @@
-"""
-metrics.py
-----------
-Structured evaluation metrics for scoring LLM outputs.
-
-Every metric here is free / open-source and runs locally:
-
-  - ROUGE-L        : uses the `rouge-score` package if installed, otherwise
-                      falls back to a pure-Python LCS-based implementation
-                      (identical algorithm, zero dependencies).
-  - Semantic sim    : uses `bert-score` (BERTScore) if torch + a local
-                      HF model are available (still $0 — no API calls),
-                      otherwise falls back to TF-IDF cosine similarity via
-                      scikit-learn, which is dependency-light and runs on
-                      any machine with no GPU/downloads required.
-  - Diversity       : distinct-n and repetition metrics computed from raw
-                      text, no dependencies at all.
-  - Composite score : a configurable weighted blend of the above, used for
-                      ranking prompt/model configurations.
-
-This mirrors the "metric-human agreement" idea from the human-in-the-loop
-project: automated scores are cheap to compute at scale, and
-`agreement.py`-style analysis (see pipeline.py) checks how well they track
-human judgment when human ratings are supplied.
-"""
-
 from __future__ import annotations
 
 import re
@@ -31,10 +5,6 @@ from collections import Counter
 from dataclasses import dataclass
 from typing import Optional
 
-# ---------------------------------------------------------------------------
-# Optional heavy dependencies — imported lazily so the framework still works
-# (with graceful fallbacks) on a machine with no torch / internet access.
-# ---------------------------------------------------------------------------
 _ROUGE_BACKEND = None
 try:
     from rouge_score import rouge_scorer as _rs
@@ -49,9 +19,7 @@ try:
     import bert_score  # noqa: F401
 
     _BERTSCORE_AVAILABLE = True
-    # Quiet the noisy per-load "LOAD REPORT" table transformers prints when
-    # the RoBERTa backbone is loaded (harmless — it's just reporting that
-    # the LM head / pooler weights aren't used for embedding extraction).
+
     try:
         from transformers.utils import logging as _hf_logging
 
@@ -74,9 +42,6 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r"\w+", text.lower())
 
 
-# ---------------------------------------------------------------------------
-# ROUGE-L
-# ---------------------------------------------------------------------------
 def _lcs_length(a: list[str], b: list[str]) -> int:
     """Longest common subsequence length (pure Python, O(len(a)*len(b)))."""
     dp = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
@@ -87,7 +52,6 @@ def _lcs_length(a: list[str], b: list[str]) -> int:
             else:
                 dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
     return dp[-1][-1]
-
 
 def rouge_l(reference: str, hypothesis: str) -> float:
     """ROUGE-L F1 score in [0, 1]. Uses `rouge-score` if installed, else a
@@ -114,14 +78,6 @@ def rouge_l(reference: str, hypothesis: str) -> float:
     return 2 * precision * recall / (precision + recall)
 
 
-# ---------------------------------------------------------------------------
-# Semantic similarity (BERTScore-style alignment)
-# ---------------------------------------------------------------------------
-# BERTScore's backbone (roberta-large by default) is loaded ONCE and cached
-# here. Building a fresh bert_score.score(...) call per response reloads the
-# entire model every time -- slow and produces a repeated "LOAD REPORT" log
-# line per call. A single cached BERTScorer instance is reused across the
-# whole experiment run instead.
 _BERT_SCORER_CACHE: dict[str, "object"] = {}
 
 
@@ -131,7 +87,6 @@ def _get_bert_scorer(lang: str):
 
         _BERT_SCORER_CACHE[lang] = BERTScorer(lang=lang, rescale_with_baseline=False)
     return _BERT_SCORER_CACHE[lang]
-
 
 def semantic_similarity(
     reference: str, hypothesis: str, lang: str = "en"
@@ -153,7 +108,7 @@ def semantic_similarity(
             _, _, f1 = scorer.score([hypothesis], [reference])
             return float(f1.mean()), "bert-score"
         except Exception:
-            pass  # fall through to TF-IDF fallback (e.g. no model cached, no net)
+            pass 
 
     if _SKLEARN_AVAILABLE:
         vec = TfidfVectorizer().fit([reference, hypothesis])
@@ -161,7 +116,6 @@ def semantic_similarity(
         sim = cosine_similarity(matrix[0], matrix[1])[0][0]
         return float(sim), "tfidf-cosine"
 
-    # last-resort fallback: token overlap Jaccard
     ref_set, hyp_set = set(_tokenize(reference)), set(_tokenize(hypothesis))
     if not ref_set or not hyp_set:
         return 0.0, "jaccard"
@@ -169,9 +123,6 @@ def semantic_similarity(
     return jaccard, "jaccard"
 
 
-# ---------------------------------------------------------------------------
-# Diversity / quality heuristics (no reference needed)
-# ---------------------------------------------------------------------------
 def distinct_n(text: str, n: int = 2) -> float:
     """Fraction of unique n-grams — a proxy for repetitiveness/degeneration."""
     tokens = _tokenize(text)
@@ -187,9 +138,7 @@ def response_length(text: str) -> int:
     return len(_tokenize(text))
 
 
-# ---------------------------------------------------------------------------
 # Composite scoring
-# ---------------------------------------------------------------------------
 @dataclass
 class MetricResult:
     rouge_l: float
@@ -228,7 +177,7 @@ def score_response(
             + weights["distinct_2"] * d2
         )
     else:
-        composite = d2  # no gold reference -> diversity is the only signal
+        composite = d2  
 
     return MetricResult(
         rouge_l=r_l,

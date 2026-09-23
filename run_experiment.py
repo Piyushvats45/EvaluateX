@@ -1,19 +1,4 @@
 #!/usr/bin/env python3
-"""
-run_experiment.py
-------------------
-End-to-end CLI: load prompts + model configs -> run the pipeline -> score
-every response -> log to SQLite -> generate a CSV + HTML report.
-
-Usage:
-    python run_experiment.py
-    python run_experiment.py --prompts data/prompts.json --models config/models.yaml \
-        --candidates 2 --name "baseline-run"
-
-Everything here runs locally at zero cost: mock backend needs nothing at
-all; the huggingface backend needs only `pip install transformers torch`
-(one-time, free, open-weight models).
-"""
 
 import argparse
 import sys

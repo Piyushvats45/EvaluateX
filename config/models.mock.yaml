@@ -1,11 +1,3 @@
-# CI / OFFLINE model configuration — uses the dependency-free mock backend
-# so this file can be used for fast smoke tests, CI pipelines, or demos on
-# a machine with no internet access. No model weights are downloaded.
-#
-# For real generated text and meaningful quality metrics, use the default
-# config/models.yaml instead (local HuggingFace models — still $0 cost,
-# just requires `pip install transformers torch` and a one-time download):
-#   python run_experiment.py --models config/models.yaml
 
 models:
   - name: concise-style
@@ -22,11 +14,3 @@ models:
     backend: mock
     model_name: mock-creative
     params: {}
-
-  # Example real config (requires `pip install transformers torch` and an
-  # internet connection for the one-time model download):
-  # - name: distilgpt2-default
-  #   backend: huggingface
-  #   model_name: distilgpt2
-  #   params:
-  #     device: cpu

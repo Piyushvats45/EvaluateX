@@ -1,6 +1,3 @@
-# All dependencies below are free / open-source. No paid APIs are used anywhere
-# in this framework — every model, metric library, and storage engine is local
-# and $0 cost.
 
 # Core
 numpy>=1.24
@@ -21,8 +18,6 @@ bert-score>=0.3.13
 # Optional: nicer progress bars
 tqdm>=4.66
 
-# Deployment: REST API + interactive demo UI (free to run and free to host
-# on Render/Fly.io/HF Spaces free tiers, or Streamlit Community Cloud)
 fastapi>=0.110
 uvicorn[standard]>=0.27
 streamlit>=1.32

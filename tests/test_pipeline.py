@@ -1,14 +1,9 @@
-"""Integration tests for src/pipeline.py + src/database.py, using the mock
-backend and a temp SQLite file so tests are fast, offline, and isolated.
-Run with: pytest tests/test_pipeline.py"""
-
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.pipeline import ExperimentPipeline, ModelConfig, PromptItem
-
 
 def _sample_prompts():
     return [
@@ -22,7 +17,6 @@ def _sample_configs():
         ModelConfig(name="concise", backend="mock", model_name="mock-concise", params={}),
         ModelConfig(name="verbose", backend="mock", model_name="mock-verbose", params={}),
     ]
-
 
 def test_pipeline_runs_and_logs_every_combination(tmp_path):
     db_path = str(tmp_path / "test.db")
@@ -42,7 +36,6 @@ def test_pipeline_runs_and_logs_every_combination(tmp_path):
     assert set(df["model_name"].unique()) == {"concise", "verbose"}
     assert df["composite"].notna().all()
 
-
 def test_pipeline_records_human_scores(tmp_path):
     db_path = str(tmp_path / "test_human.db")
     pipeline = ExperimentPipeline(db_path=db_path)
@@ -61,7 +54,6 @@ def test_pipeline_records_human_scores(tmp_path):
     rated = df[df["human_score"].notna()]
     assert len(rated) == 2
     assert set(rated["human_score"]) == {0.8, 0.3}
-
 
 def test_multiple_experiments_are_isolated(tmp_path):
     db_path = str(tmp_path / "multi.db")

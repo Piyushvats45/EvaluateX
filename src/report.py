@@ -1,14 +1,3 @@
-"""
-report.py
----------
-Turns the raw logged experiment data into:
-  1. A CSV summary (per-model aggregate metrics) for spreadsheets/tracking.
-  2. A single self-contained HTML report (charts embedded as base64 PNGs,
-     so it opens standalone with no server, no internet, $0 cost) that
-     compares models side-by-side and — if human ratings were supplied —
-     reports metric-human agreement.
-"""
-
 from __future__ import annotations
 
 import base64
@@ -72,14 +61,12 @@ HTML_TEMPLATE = """
 </html>
 """
 
-
 def _fig_to_base64(fig) -> str:
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=140, bbox_inches="tight")
     plt.close(fig)
     buf.seek(0)
     return base64.b64encode(buf.read()).decode("utf-8")
-
 
 def _composite_chart(df: pd.DataFrame) -> str:
     agg = df.groupby("model_name")["composite"].mean().sort_values(ascending=False)
@@ -101,7 +88,6 @@ def _latency_chart(df: pd.DataFrame) -> str:
     ax.set_title("Latency vs. composite score")
     ax.legend(fontsize=8)
     return _fig_to_base64(fig)
-
 
 def generate_report(df: pd.DataFrame, experiment_id: int, out_path: str, title: str = "LLM Evaluation Report") -> str:
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)

@@ -1,27 +1,3 @@
-"""
-models.py
----------
-Unified interface for generating candidate responses from multiple LLM
-configurations at zero cost.
-
-Two backends:
-
-  "huggingface"  -> runs a small open-weight model fully locally via the
-                     `transformers` library (e.g. distilgpt2, gpt2,
-                     gpt2-medium, or any other model id on the Hugging Face
-                     Hub). No API key, no per-token billing — the only cost
-                     is a one-time model download and local compute.
-
-  "mock"         -> a deterministic, dependency-free text generator used
-                     for offline development/testing, CI, or machines with
-                     no internet access / no GPU. Lets you exercise the
-                     entire pipeline (prompting, scoring, logging,
-                     reporting) without downloading anything.
-
-Both backends implement the same `.generate(prompt, n)` interface so the
-rest of the framework (pipeline.py) never needs to know which one is in use.
-"""
-
 from __future__ import annotations
 
 import hashlib
@@ -30,7 +6,6 @@ import time
 from dataclasses import dataclass, field
 from typing import Optional
 
-
 @dataclass
 class GenerationResult:
     text: str
@@ -38,13 +13,11 @@ class GenerationResult:
     model_name: str
     backend: str
 
-
 class BaseRunner:
     backend_name = "base"
 
     def generate(self, prompt: str, n: int = 1, **gen_kwargs) -> list[GenerationResult]:
         raise NotImplementedError
-
 
 class HuggingFaceRunner(BaseRunner):
     """Loads a local, open-weight causal LM once and reuses it for every
@@ -98,7 +71,6 @@ class HuggingFaceRunner(BaseRunner):
                 )
             )
         return results
-
 
 class MockRunner(BaseRunner):
     """Deterministic, offline, zero-dependency stand-in for a real LLM.
@@ -157,7 +129,6 @@ class MockRunner(BaseRunner):
                 )
             )
         return results
-
 
 def build_runner(backend: str, model_name: str, **kwargs) -> BaseRunner:
     """Factory: build the right runner from a config entry."""

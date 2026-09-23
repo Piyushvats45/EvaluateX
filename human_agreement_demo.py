@@ -1,17 +1,4 @@
 #!/usr/bin/env python3
-"""
-human_agreement_demo.py
-------------------------
-Small standalone demo of the "human-in-the-loop" reliability check: run an
-experiment while supplying a few manual human ratings, then measure how
-well the automated composite metric agrees with those human judgments
-(Pearson + Spearman correlation). This is the same idea as validating
-BERTScore/ROUGE-L against human preference in the earlier evaluation
-project, adapted into this framework's pipeline.
-
-Usage:
-    python human_agreement_demo.py
-"""
 
 import sys
 from pathlib import Path

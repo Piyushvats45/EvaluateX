@@ -1,18 +1,3 @@
-"""
-pipeline.py
------------
-The modular experiment pipeline: takes a set of structured NLP-task prompts
-and a set of model configurations, runs every prompt through every model,
-scores each response with metrics.py, and logs everything to SQLite via
-database.py.
-
-This is intentionally decoupled from any specific model or metric
-implementation so new models (`models.py`) or new metrics (`metrics.py`)
-can be dropped in without touching the orchestration logic — that's the
-"reusable experimentation workflow" for rapid iteration on prompt
-engineering strategies.
-"""
-
 from __future__ import annotations
 
 import json
@@ -26,7 +11,6 @@ from . import metrics as metrics_mod
 from .database import ExperimentDB
 from .models import build_runner
 
-
 @dataclass
 class ModelConfig:
     name: str
@@ -34,18 +18,15 @@ class ModelConfig:
     model_name: str
     params: dict
 
-
 @dataclass
 class PromptItem:
     task: str
     prompt: str
     reference: Optional[str] = None
 
-
 def load_prompts(path: str) -> list[PromptItem]:
     data = json.loads(Path(path).read_text())
     return [PromptItem(task=d.get("task", "general"), prompt=d["prompt"], reference=d.get("reference")) for d in data]
-
 
 def load_model_configs(path: str) -> list[ModelConfig]:
     raw = yaml.safe_load(Path(path).read_text())
@@ -58,7 +39,6 @@ def load_model_configs(path: str) -> list[ModelConfig]:
         )
         for cfg in raw["models"]
     ]
-
 
 class ExperimentPipeline:
     def __init__(self, db_path: str = "outputs/experiments.db"):
@@ -81,8 +61,6 @@ class ExperimentPipeline:
         """
         exp_id = self.db.create_experiment(experiment_name, notes=notes)
 
-        # Build (and cache) one runner per model config — loading a model
-        # once and reusing it across prompts is what keeps this $0 and fast.
         runners = {cfg.name: build_runner(cfg.backend, cfg.model_name, **cfg.params) for cfg in model_configs}
 
         for p_idx, item in enumerate(prompts):

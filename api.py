@@ -1,23 +1,3 @@
-"""
-api.py
-------
-FastAPI service exposing the evaluation framework as a REST API — the
-piece you'd actually deploy behind a URL (Render, Railway, Fly.io free
-tiers, or a Hugging Face Space with Docker SDK). $0 cost: open-weight
-model run locally in the container, SQLite for storage, no external
-services billed per call.
-
-Run locally:
-    uvicorn api:app --reload --port 8000
-
-Then:
-    curl -X POST http://localhost:8000/evaluate \
-      -H "Content-Type: application/json" \
-      -d '{"prompt": "Question: What is the capital of France? Answer:", "reference": "Paris"}'
-
-Docs (auto-generated): http://localhost:8000/docs
-"""
-
 from __future__ import annotations
 
 from typing import Optional

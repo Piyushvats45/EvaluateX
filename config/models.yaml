@@ -1,13 +1,3 @@
-# Default, PRODUCTION model configuration — real, free, local open-weight
-# models via `transformers`. First run downloads each model once (a
-# one-time, free download from the Hugging Face Hub); every run after that
-# is fully offline with no API key and no per-call cost.
-#
-# Requires: pip install transformers torch  (see requirements.txt)
-#
-# For a config that needs NO downloads at all (CI, quick smoke tests, demos
-# on a machine with no internet), use config/models.mock.yaml instead:
-#   python run_experiment.py --models config/models.mock.yaml
 
 models:
   - name: distilgpt2-default
@@ -21,11 +11,3 @@ models:
     model_name: gpt2
     params:
       device: cpu
-
-  # Larger, slower, generally higher quality — uncomment if your machine
-  # has the RAM/CPU (or a GPU) to spare. Still $0 cost, just heavier.
-  # - name: gpt2-medium
-  #   backend: huggingface
-  #   model_name: gpt2-medium
-  #   params:
-  #     device: cpu
